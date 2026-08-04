@@ -29,5 +29,34 @@
       "type": "image/png",
       "sizes": "512x512"
     }
-  ]
+  ],
+  "shortcuts": [
+    {
+      "name": "Command Deck (HQ)",
+      "short_name": "HQ",
+      "description": "View overall system metrics and active targets",
+      "url": "./index.html#hq",
+      "icons": [{"src": "./icon-192.png", "sizes": "192x192"}]
+    },
+    {
+      "name": "Daily Journal (Today)",
+      "short_name": "Journal",
+      "description": "Log biometrics, hydration, and quest progress",
+      "url": "./index.html#today",
+      "icons": [{"src": "./icon-192.png", "sizes": "192x192"}]
+    },
+    {
+      "name": "Syllabus Scanner",
+      "short_name": "Syllabus",
+      "description": "Track GATE civil engineering subjects progress",
+      "url": "./index.html#study",
+      "icons": [{"src": "./icon-192.png", "sizes": "192x192"}]
+    }
+  ],
+  "launch_handler": {
+    "client_mode": "focus-existing"
+  },
+  "edge_side_panel": {
+    "preferred_width": 400
+  }
 }
