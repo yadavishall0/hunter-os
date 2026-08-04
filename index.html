@@ -14243,10 +14243,27 @@ Hunter's current query: "${query}"`;
         console.error("SYS LOAD FAILED:", err);
       }
       try {
-        switchTab('hq');
+        const hash = window.location.hash ? window.location.hash.replace('#', '') : 'hq';
+        const validTabs = ['hq', 'today', 'study', 'gym', 'settings', 'tools', 'recovery', 'mind'];
+        if (validTabs.includes(hash)) {
+          switchTab(hash);
+        } else {
+          switchTab('hq');
+        }
       } catch (err) {
         console.error("SYS TABS SWITCH FAILED:", err);
       }
+      window.addEventListener('hashchange', () => {
+        try {
+          const hash = window.location.hash ? window.location.hash.replace('#', '') : 'hq';
+          const validTabs = ['hq', 'today', 'study', 'gym', 'settings', 'tools', 'recovery', 'mind'];
+          if (validTabs.includes(hash)) {
+            switchTab(hash);
+          }
+        } catch (err) {
+          console.error("HASHCHANGE SWITCH FAILED:", err);
+        }
+      });
       
 
       
