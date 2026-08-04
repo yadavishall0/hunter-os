@@ -1,0 +1,17 @@
+{
+  "name": "Hunter OS Tracker",
+  "short_name": "HunterOS",
+  "description": "Premium S-Rank Tactical Tracking Console with Cloud Sync",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#00f0ff",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "type": "image/svg+xml",
+      "sizes": "any"
+    }
+  ]
+}
