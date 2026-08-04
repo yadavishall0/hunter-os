@@ -937,24 +937,134 @@
     }
 
     /* Grid columns collapse for mobile */
+    /* Grid columns collapse for mobile */
     @media (max-width: 1024px) {
-      .left-sidebar { display: none; }
-      .right-sidebar { display: none; }
-      body { overflow-y: auto; height: auto; }
+      .left-sidebar { display: none !important; }
+      .right-sidebar { display: none !important; }
+      body { overflow-y: auto !important; height: auto !important; }
       main {
-        display: block;
-        height: auto;
-        padding-bottom: 80px;
+        display: block !important;
+        height: auto !important;
+        padding-bottom: 90px !important; /* Space for bottom nav */
       }
       header {
-        position: sticky;
+        position: sticky !important;
         top: 0;
+        height: auto !important;
+        flex-direction: column !important;
+        padding: 10px !important;
+        gap: 8px !important;
+      }
+      .header-right {
+        display: none !important; /* Hide secondary time to save space */
       }
     }
+    
+    /* Mobile specific layout overrides */
+    .mobile-bottom-nav {
+      display: none;
+    }
+    
     @media (max-width: 768px) {
       .grid-2, .grid-3, .grid-4 {
-        grid-template-columns: 1fr;
-        gap: 12px;
+        grid-template-columns: 1fr !important;
+        gap: 12px !important;
+      }
+      
+      /* Force inline grids (like in HQ tab) to stack */
+      .tab-content div[style*="display:grid"], 
+      .tab-content div[style*="display: grid"] {
+        grid-template-columns: 1fr !important;
+        gap: 16px !important;
+      }
+      
+      .center-panel {
+        padding: 12px !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+      }
+      
+      /* Top header details layout simplification for mobile */
+      header > div:nth-child(2) {
+        flex-wrap: wrap !important;
+        justify-content: center !important;
+        gap: 10px 15px !important;
+      }
+      
+      /* Glowing mobile bottom nav bar */
+      .mobile-bottom-nav {
+        display: flex;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 65px;
+        background: rgba(8, 10, 16, 0.95);
+        backdrop-filter: blur(12px);
+        border-top: 1.5px solid var(--border);
+        justify-content: space-around;
+        align-items: center;
+        z-index: 9999;
+        box-shadow: 0 -5px 25px rgba(0,0,0,0.8);
+        padding: 0 10px;
+      }
+      
+      .mobile-nav-btn {
+        background: none;
+        border: none;
+        outline: none;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: var(--dim);
+        font-family: 'Rajdhani', sans-serif;
+        font-weight: 600;
+        font-size: 0.7rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        flex: 1;
+        height: 100%;
+        gap: 3px;
+        position: relative;
+      }
+      
+      .mobile-nav-btn .nav-icon {
+        font-size: 1.25rem;
+        filter: grayscale(1) opacity(0.6);
+        transition: all 0.2s ease;
+      }
+      
+      .mobile-nav-btn .nav-text {
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        font-family: 'Orbitron', sans-serif;
+      }
+      
+      .mobile-nav-btn:hover {
+        color: var(--cyan);
+      }
+      
+      .mobile-nav-btn.active {
+        color: var(--cyan);
+        text-shadow: var(--glow-cyan);
+      }
+      
+      .mobile-nav-btn.active .nav-icon {
+        filter: none;
+        transform: scale(1.15);
+      }
+      
+      .mobile-nav-btn.active::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 20%;
+        right: 20%;
+        height: 3px;
+        background: var(--cyan);
+        box-shadow: var(--glow-cyan);
+        border-radius: 3px 3px 0 0;
       }
     }
     /* Center notification container override styles */
@@ -3555,6 +3665,30 @@
     </div>
   </section>
     </main>
+
+  <!-- MOBILE BOTTOM NAVIGATION -->
+  <div class="mobile-bottom-nav">
+    <button class="mobile-nav-btn active" onclick="switchTab('hq')">
+      <span class="nav-icon">📊</span>
+      <span class="nav-text">HQ</span>
+    </button>
+    <button class="mobile-nav-btn" onclick="switchTab('today')">
+      <span class="nav-icon">📝</span>
+      <span class="nav-text">Today</span>
+    </button>
+    <button class="mobile-nav-btn" onclick="switchTab('study')">
+      <span class="nav-icon">📚</span>
+      <span class="nav-text">Study</span>
+    </button>
+    <button class="mobile-nav-btn" onclick="switchTab('training')">
+      <span class="nav-icon">💪</span>
+      <span class="nav-text">Workout</span>
+    </button>
+    <button class="mobile-nav-btn" onclick="switchTab('settings')">
+      <span class="nav-icon">⚙️</span>
+      <span class="nav-text">Settings</span>
+    </button>
+  </div>
 
     <!-- BOTTOM FIXED STATUS BAR -->
     <footer class="status-bar">
