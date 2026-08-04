@@ -55,3 +55,16 @@ self.addEventListener('fetch', (e) => {
     })
   );
 });
+
+// Background Sync & Periodic Sync Listeners (for Native OS integration)
+self.addEventListener('sync', (e) => {
+  console.log('SYS PWA: Background Sync triggered:', e.tag);
+});
+
+self.addEventListener('periodicsync', (e) => {
+  console.log('SYS PWA: Periodic Sync triggered:', e.tag);
+});
+
+self.addEventListener('push', (e) => {
+  console.log('SYS PWA: Push Notification received:', e);
+});
