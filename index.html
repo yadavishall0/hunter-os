@@ -937,16 +937,21 @@
     }
 
     /* Grid columns collapse for mobile */
-    /* Grid columns collapse for mobile */
-    @media (max-width: 1024px) {
+    .mobile-bottom-nav {
+      display: none;
+    }
+    
+    @media (max-width: 768px) {
       .left-sidebar { display: none !important; }
       .right-sidebar { display: none !important; }
       body { overflow-y: auto !important; height: auto !important; }
+      
       main {
         display: block !important;
         height: auto !important;
         padding-bottom: 90px !important; /* Space for bottom nav */
       }
+      
       header {
         position: sticky !important;
         top: 0;
@@ -955,25 +960,18 @@
         padding: 10px !important;
         gap: 8px !important;
       }
+      
       .header-right {
         display: none !important; /* Hide secondary time to save space */
       }
-    }
-    
-    /* Mobile specific layout overrides */
-    .mobile-bottom-nav {
-      display: none;
-    }
-    
-    @media (max-width: 768px) {
+      
       .grid-2, .grid-3, .grid-4 {
         grid-template-columns: 1fr !important;
         gap: 12px !important;
       }
       
-      /* Force inline grids (like in HQ tab) to stack */
-      .tab-content div[style*="display:grid"], 
-      .tab-content div[style*="display: grid"] {
+      /* Collapse HQ Grid columns */
+      .hq-grid {
         grid-template-columns: 1fr !important;
         gap: 16px !important;
       }
@@ -982,6 +980,8 @@
         padding: 12px !important;
         width: 100% !important;
         box-sizing: border-box !important;
+        height: auto !important;
+        overflow-y: visible !important;
       }
       
       /* Top header details layout simplification for mobile */
@@ -1592,7 +1592,7 @@
       <!-- TAB 1: HQ -->
       <!-- ============================================== -->
       <div id="tab-hq" class="tab-content active">
-        <div style="display:grid; grid-template-columns: 310px 1fr 330px; gap:16px; align-items:start;">
+        <div class="hq-grid" style="display:grid; grid-template-columns: 310px 1fr 330px; gap:16px; align-items:start;">
           
           <!-- COLUMN A (LEFT PANEL): QUESTS & ACADEMIC INTEL -->
           <div style="display:flex; flex-direction:column; gap:16px;">
@@ -14378,7 +14378,7 @@ Hunter's current query: "${query}"`;
       }
       try {
         const hash = window.location.hash ? window.location.hash.replace('#', '') : 'hq';
-        const validTabs = ['hq', 'today', 'study', 'gym', 'settings', 'tools', 'recovery', 'mind'];
+        const validTabs = ['hq', 'today', 'training', 'study', 'mind', 'stats', 'review', 'library', 'tools', 'settings'];
         if (validTabs.includes(hash)) {
           switchTab(hash);
         } else {
@@ -14390,7 +14390,7 @@ Hunter's current query: "${query}"`;
       window.addEventListener('hashchange', () => {
         try {
           const hash = window.location.hash ? window.location.hash.replace('#', '') : 'hq';
-          const validTabs = ['hq', 'today', 'study', 'gym', 'settings', 'tools', 'recovery', 'mind'];
+          const validTabs = ['hq', 'today', 'training', 'study', 'mind', 'stats', 'review', 'library', 'tools', 'settings'];
           if (validTabs.includes(hash)) {
             switchTab(hash);
           }
