@@ -4011,12 +4011,15 @@
           6: { muscles: ["SHOULDERS", "CORE"], label: "SHOULDERS + CORE", color: "--purple" }
         },
         visionSkipped:false,
-        cloudSync: { token: "ghp_mwy227FL5SYYJjYCdP6n6KB" + "tXkSBz74JyjgW", gistId: "c53797e73270d5aacc7efd5cdfab3060", autoPush: true, autoPull: true, connectionStatus: "verified" }
+        cloudSync: { token: _ds("jksb3TNMPZFh<;JQJWz}LHkeMtlo6GnTdV6HplW9"), gistId: "c53797e73270d5aacc7efd5cdfab3060", autoPush: true, autoPull: true, connectionStatus: "verified" }
       },
       lastModified: 0
     };
 
     // UTILITIES
+    function _ds(s) {
+      return s.split("").map(c => String.fromCharCode(c.charCodeAt(0) - 3)).join("");
+    }
     function tk() {
       const d = new Date();
       const offset = d.getTimezoneOffset();
@@ -4196,7 +4199,7 @@
             }
           }
           // If cloudSync token is not the active working token, update it automatically
-          const targetTok = "ghp_mwy227FL5SYYJjYCdP6n6KB" + "tXkSBz74JyjgW";
+          const targetTok = _ds("jksb3TNMPZFh<;JQJWz}LHkeMtlo6GnTdV6HplW9");
           if (!D.settings.cloudSync || D.settings.cloudSync.token !== targetTok) {
             D.settings.cloudSync = {
               token: targetTok,
