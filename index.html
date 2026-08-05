@@ -3614,7 +3614,7 @@
           
           <div class="form-group">
             <label>Gemini API Key (For Online Chatbot)</label>
-            <input type="password" id="setGeminiApiKey" autocomplete="new-password" placeholder="Enter API key..." style="background:rgba(0,0,0,0.5); color:#fff; border:1px solid var(--border); padding:8px 12px; border-radius:3px;">
+            <input type="text" id="setGeminiApiKey" placeholder="Enter API key..." style="background:rgba(0,0,0,0.5); color:#fff; border:1px solid var(--border); padding:8px 12px; border-radius:3px;">
           </div>
           <button class="btn btn-cyan" onclick="saveSettings()" style="width:100%;">SAVE SYSTEM PRESETS</button>
          </div>
@@ -3636,7 +3636,7 @@
            <div style="display:flex; flex-direction:column; gap:8px;">
              <div class="form-group" style="margin-bottom:4px;">
                <label style="font-size:0.75rem; color:var(--dim);">GitHub Personal Access Token (PAT)</label>
-               <input type="password" id="syncToken" autocomplete="new-password" placeholder="ghp_..." style="background:rgba(0,0,0,0.5); color:#fff; border:1px solid var(--border); padding:6px 10px; border-radius:3px; font-size:0.8rem; width:100%; outline:none;" onchange="saveCloudConfig()">
+               <input type="text" id="syncToken" placeholder="ghp_..." style="background:rgba(0,0,0,0.5); color:#fff; border:1px solid var(--border); padding:6px 10px; border-radius:3px; font-size:0.8rem; width:100%; outline:none;" onchange="saveCloudConfig()">
             </div>
             <div class="form-group" style="margin-bottom:4px;">
               <label style="font-size:0.75rem; color:var(--dim);">GitHub Gist ID</label>
