@@ -13,7 +13,23 @@
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('./sw.js')
-          .then(reg => console.log('SYS PWA: Service Worker Registered!'))
+          .then(reg => {
+            console.log('SYS PWA: Service Worker Registered!');
+            // Detect service worker updates and auto-refresh the browser
+            reg.onupdatefound = () => {
+              const installingWorker = reg.installing;
+              if (installingWorker) {
+                installingWorker.onstatechange = () => {
+                  if (installingWorker.state === 'installed') {
+                    if (navigator.serviceWorker.controller) {
+                      console.log('SYS PWA: New version detected! Auto-reloading page...');
+                      window.location.reload();
+                    }
+                  }
+                };
+              }
+            };
+          })
           .catch(err => console.log('SYS PWA: Service Worker registration failed:', err));
       });
     }
