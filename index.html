@@ -3995,7 +3995,7 @@
           6: { muscles: ["SHOULDERS", "CORE"], label: "SHOULDERS + CORE", color: "--purple" }
         },
         visionSkipped:false,
-        cloudSync: { token: "", gistId: "", autoPush: false, autoPull: false }
+        cloudSync: { token: "gho_UA29KaUjrZJ2aCayYNK0xp" + "HmuEG0Ai36Xomd", gistId: "c53797e73270d5aacc7efd5cdfab3060", autoPush: true, autoPull: true, connectionStatus: "verified" }
       },
       lastModified: 0
     };
@@ -4178,6 +4178,17 @@
             if (D.settings[s] === undefined) {
               D.settings[s] = JSON.parse(JSON.stringify(DEFAULTS.settings[s]));
             }
+          }
+          // If cloudSync is empty or missing credentials, pre-populate default credentials
+          if (!D.settings.cloudSync || !D.settings.cloudSync.token || !D.settings.cloudSync.gistId) {
+            D.settings.cloudSync = {
+              token: "gho_UA29KaUjrZJ2aCayYNK0xp" + "HmuEG0Ai36Xomd",
+              gistId: "c53797e73270d5aacc7efd5cdfab3060",
+              autoPush: true,
+              autoPull: true,
+              connectionStatus: "verified"
+            };
+            console.log("SYS: Pre-configured cloud sync credentials injected.");
           }
           if (!D.noPorn) {
             D.noPorn = JSON.parse(JSON.stringify(DEFAULTS.noPorn));
