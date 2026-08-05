@@ -3632,15 +3632,12 @@
  
          <!-- SECTION 5: CLOUD SYNC GATE -->
          <div class="card" style="clip-path:none; border-left: 2.5px solid var(--purple-neon);">
-           <div class="card-title" style="color:var(--purple-neon); text-shadow:var(--glow-purple);">☁️ GITHUB CLOUD SYNC GATE</div>
+           <div class="card-title" style="color:var(--purple-neon); text-shadow:var(--glow-purple);">☁️ HUNTER CLOUD SYNC GATE</div>
            <div style="display:flex; flex-direction:column; gap:8px;">
+             <input type="text" id="syncToken" style="display:none;" onchange="saveCloudConfig()">
              <div class="form-group" style="margin-bottom:4px;">
-               <label style="font-size:0.75rem; color:var(--dim);">GitHub Personal Access Token (PAT)</label>
-               <input type="text" id="syncToken" placeholder="ghp_..." style="background:rgba(0,0,0,0.5); color:#fff; border:1px solid var(--border); padding:6px 10px; border-radius:3px; font-size:0.8rem; width:100%; outline:none;" onchange="saveCloudConfig()">
-            </div>
-            <div class="form-group" style="margin-bottom:4px;">
-              <label style="font-size:0.75rem; color:var(--dim);">GitHub Gist ID</label>
-              <input type="text" id="syncGistId" placeholder="Alphanumeric Gist ID..." style="background:rgba(0,0,0,0.5); color:#fff; border:1px solid var(--border); padding:6px 10px; border-radius:3px; font-size:0.8rem; width:100%; outline:none;" onchange="saveCloudConfig()">
+               <label style="font-size:0.75rem; color:var(--dim);">Cloud Sync Key</label>
+               <input type="text" id="syncGistId" placeholder="Enter sync key..." style="background:rgba(0,0,0,0.5); color:#fff; border:1px solid var(--border); padding:6px 10px; border-radius:3px; font-size:0.8rem; width:100%; outline:none;" onchange="saveCloudConfig()">
             </div>
             
             <!-- Auto sync checkboxes -->
@@ -4011,7 +4008,7 @@
           6: { muscles: ["SHOULDERS", "CORE"], label: "SHOULDERS + CORE", color: "--purple" }
         },
         visionSkipped:false,
-        cloudSync: { token: _ds("jksb3TNMPZFh<;JQJWz}LHkeMtlo6GnTdV6HplW9"), gistId: "c53797e73270d5aacc7efd5cdfab3060", autoPush: true, autoPull: true, connectionStatus: "verified" }
+        cloudSync: { token: "default", gistId: "019fd0a9-acbf-71ec-9118-c952a8ef8fd1", autoPush: true, autoPull: true, connectionStatus: "verified" }
       },
       lastModified: 0
     };
@@ -4198,17 +4195,17 @@
               D.settings[s] = JSON.parse(JSON.stringify(DEFAULTS.settings[s]));
             }
           }
-          // If cloudSync token is not the active working token, update it automatically
-          const targetTok = _ds("jksb3TNMPZFh<;JQJWz}LHkeMtlo6GnTdV6HplW9");
-          if (!D.settings.cloudSync || D.settings.cloudSync.token !== targetTok) {
+          // Migrate automatically to token-free Hunter Cloud Sync
+          const targetGist = "019fd0a9-acbf-71ec-9118-c952a8ef8fd1";
+          if (!D.settings.cloudSync || D.settings.cloudSync.gistId !== targetGist || D.settings.cloudSync.token !== "default") {
             D.settings.cloudSync = {
-              token: targetTok,
-              gistId: "c53797e73270d5aacc7efd5cdfab3060",
+              token: "default",
+              gistId: targetGist,
               autoPush: true,
               autoPull: true,
               connectionStatus: "verified"
             };
-            console.log("SYS: Fresh cloud sync credentials synchronized.");
+            console.log("SYS: Migrated to token-free Hunter Cloud Sync.");
           }
           if (!D.noPorn) {
             D.noPorn = JSON.parse(JSON.stringify(DEFAULTS.noPorn));
@@ -16940,7 +16937,7 @@ Hunter's current query: "${query}"`;
       const config = D.settings.cloudSync || {};
       const statusEl = document.getElementById("syncStatus");
       if (!statusEl) return;
-      if (!config.token || !config.gistId) {
+      if (!config.gistId) {
         statusEl.innerHTML = "Status: <span style='color:var(--dim); font-weight:bold;'>OFFLINE (Local Storage Mode)</span>";
       } else {
         const lastSync = localStorage.getItem('last_cloud_sync_time') || 'Never';
@@ -16950,7 +16947,7 @@ Hunter's current query: "${query}"`;
         if (syncStatusState === "verified") {
           statusText = "<span style='color:var(--green); font-weight:bold;'>CONNECTED & STABLE</span>";
         } else if (syncStatusState === "failed") {
-          statusText = "<span style='color:var(--red); font-weight:bold;'>CONNECTION FAILED (Check Credentials)</span>";
+          statusText = "<span style='color:var(--red); font-weight:bold;'>CONNECTION FAILED (Check Key)</span>";
         } else {
           statusText = "<span style='color:var(--yellow); font-weight:bold;'>UNVERIFIED (Click Test Connection)</span>";
         }
@@ -16961,27 +16958,25 @@ Hunter's current query: "${query}"`;
 
     async function testCloudConnection() {
       const config = D.settings.cloudSync || {};
-      if (!config.token || !config.gistId) {
-        sysNotif("Please enter your GitHub Token and Gist ID first.", "var(--red)", "SYNC ERROR");
+      if (!config.gistId) {
+        sysNotif("Please enter your Cloud Sync Key first.", "var(--red)", "SYNC ERROR");
         return;
       }
-      sysNotif("Connecting to GitHub Gist...", "var(--purple-neon)", "SYNC TEST");
+      sysNotif("Connecting to Hunter Cloud...", "var(--purple-neon)", "SYNC TEST");
       try {
-        const res = await fetch(`https://api.github.com/gists/${config.gistId}`, {
+        const res = await fetch(`https://jsonblob.com/api/jsonBlob/${config.gistId}`, {
           method: 'GET',
           headers: {
-            'Authorization': `token ${config.token}`,
-            'Accept': 'application/vnd.github.v3+json'
+            'Accept': 'application/json'
           }
         });
         if (res.ok) {
-          sysNotif("GitHub connection successful!", "var(--green)", "SYNC STABLE");
+          sysNotif("Hunter Cloud connection successful!", "var(--green)", "SYNC STABLE");
           D.settings.cloudSync.connectionStatus = "verified";
           save();
           updateSyncStatusUI();
         } else {
-          const err = await res.json();
-          sysNotif(`Failed: ${err.message || 'Check credentials'}`, "var(--red)", "SYNC FAILED");
+          sysNotif("Failed to find Sync Key. Check key.", "var(--red)", "SYNC FAILED");
           D.settings.cloudSync.connectionStatus = "failed";
           save();
           updateSyncStatusUI();
@@ -16996,7 +16991,7 @@ Hunter's current query: "${query}"`;
 
     async function pushToCloud(interactive = false) {
       const config = D.settings.cloudSync || {};
-      if (!config.token || !config.gistId) {
+      if (!config.gistId) {
         if (interactive) sysNotif("Cloud sync credentials not configured.", "var(--red)", "SYNC OFFLINE");
         return;
       }
@@ -17012,23 +17007,13 @@ Hunter's current query: "${query}"`;
       if (interactive) sysNotif("Uploading tracking system data...", "var(--purple-neon)", "SYNC PUSHING");
 
       try {
-        const body = {
-          description: "Hunter OS Tracker Backup",
-          files: {
-            "hunter_backup.json": {
-              content: JSON.stringify(D, null, 2)
-            }
-          }
-        };
-
-        const res = await fetch(`https://api.github.com/gists/${config.gistId}`, {
-          method: 'PATCH',
+        const res = await fetch(`https://jsonblob.com/api/jsonBlob/${config.gistId}`, {
+          method: 'PUT',
           headers: {
-            'Authorization': `token ${config.token}`,
-            'Accept': 'application/vnd.github.v3+json',
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
           },
-          body: JSON.stringify(body)
+          body: JSON.stringify(D)
         });
 
         if (res.ok) {
@@ -17036,9 +17021,8 @@ Hunter's current query: "${query}"`;
           updateSyncStatusUI();
           sysNotif("Cloud backup synced successfully!", "var(--green)", "SYNC SUCCESS");
         } else {
-          const err = await res.json();
-          console.error("Gist push failed:", err);
-          if (interactive) sysNotif(`Sync failed: ${err.message || 'Access Denied'}`, "var(--red)", "SYNC ERROR");
+          console.error("Cloud push failed:", res.status);
+          if (interactive) sysNotif("Sync failed: Cloud write denied.", "var(--red)", "SYNC ERROR");
         }
       } catch (err) {
         console.error("Sync error:", err);
@@ -17048,7 +17032,7 @@ Hunter's current query: "${query}"`;
 
     async function pullFromCloud(interactive = false) {
       const config = D.settings.cloudSync || {};
-      if (!config.token || !config.gistId) {
+      if (!config.gistId) {
         if (interactive) sysNotif("Cloud sync credentials not configured.", "var(--red)", "SYNC OFFLINE");
         return;
       }
@@ -17056,24 +17040,20 @@ Hunter's current query: "${query}"`;
       if (interactive) sysNotif("Downloading data from cloud...", "var(--purple-neon)", "SYNC PULLING");
 
       try {
-        const res = await fetch(`https://api.github.com/gists/${config.gistId}`, {
+        const res = await fetch(`https://jsonblob.com/api/jsonBlob/${config.gistId}`, {
           method: 'GET',
           headers: {
-            'Authorization': `token ${config.token}`,
-            'Accept': 'application/vnd.github.v3+json'
+            'Accept': 'application/json'
           }
         });
 
         if (res.ok) {
-          const gist = await res.json();
-          const backupFile = gist.files["hunter_backup.json"];
-          if (!backupFile || !backupFile.content) {
-            sysNotif("Backup file not found in Gist.", "var(--red)", "SYNC EMPTY");
+          const remoteD = await res.json();
+          if (!remoteD || !remoteD.settings) {
+            sysNotif("Backup file not found or corrupted in Cloud.", "var(--red)", "SYNC EMPTY");
             return;
           }
 
-          const remoteD = JSON.parse(backupFile.content);
-          
           // Conflict Resolution: Merge databases
           const mergedD = mergeDatabases(D, remoteD);
           
@@ -17099,9 +17079,8 @@ Hunter's current query: "${query}"`;
           
           sysNotif("Data pulled and merged successfully!", "var(--green)", "SYNC INTEGRATED");
         } else {
-          const err = await res.json();
-          console.error("Gist pull failed:", err);
-          if (interactive) sysNotif(`Sync failed: ${err.message || 'Access Denied'}`, "var(--red)", "SYNC ERROR");
+          console.error("Cloud pull failed:", res.status);
+          if (interactive) sysNotif("Sync failed: Cloud read denied.", "var(--red)", "SYNC ERROR");
         }
       } catch (err) {
         console.error("Sync pull error:", err);
