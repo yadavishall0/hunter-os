@@ -16887,8 +16887,18 @@ Hunter's current query: "${query}"`;
     
     function saveCloudConfig() {
       D.settings.cloudSync = D.settings.cloudSync || {};
-      D.settings.cloudSync.token = document.getElementById("syncToken").value.trim();
-      D.settings.cloudSync.gistId = document.getElementById("syncGistId").value.trim();
+      const oldToken = D.settings.cloudSync.token || "";
+      const oldGist = D.settings.cloudSync.gistId || "";
+      
+      const newToken = document.getElementById("syncToken").value.trim();
+      const newGist = document.getElementById("syncGistId").value.trim();
+      
+      if (newToken !== oldToken || newGist !== oldGist) {
+        D.settings.cloudSync.connectionStatus = "unverified";
+      }
+      
+      D.settings.cloudSync.token = newToken;
+      D.settings.cloudSync.gistId = newGist;
       D.settings.cloudSync.autoPush = !!document.getElementById("syncAutoPush").checked;
       D.settings.cloudSync.autoPull = !!document.getElementById("syncAutoPull").checked;
       save();
@@ -16903,7 +16913,18 @@ Hunter's current query: "${query}"`;
         statusEl.innerHTML = "Status: <span style='color:var(--dim); font-weight:bold;'>OFFLINE (Local Storage Mode)</span>";
       } else {
         const lastSync = localStorage.getItem('last_cloud_sync_time') || 'Never';
-        statusEl.innerHTML = `Status: <span style='color:var(--green); font-weight:bold;'>LINKED</span><br><span style='font-size:0.65rem;'>Last Sync: ${lastSync}</span>`;
+        const syncStatusState = config.connectionStatus || "unverified";
+        
+        let statusText = "";
+        if (syncStatusState === "verified") {
+          statusText = "<span style='color:var(--green); font-weight:bold;'>CONNECTED & STABLE</span>";
+        } else if (syncStatusState === "failed") {
+          statusText = "<span style='color:var(--red); font-weight:bold;'>CONNECTION FAILED (Check Credentials)</span>";
+        } else {
+          statusText = "<span style='color:var(--yellow); font-weight:bold;'>UNVERIFIED (Click Test Connection)</span>";
+        }
+        
+        statusEl.innerHTML = `Status: ${statusText}<br><span style='font-size:0.65rem;'>Last Sync: ${lastSync}</span>`;
       }
     }
 
@@ -16924,12 +16945,21 @@ Hunter's current query: "${query}"`;
         });
         if (res.ok) {
           sysNotif("GitHub connection successful!", "var(--green)", "SYNC STABLE");
+          D.settings.cloudSync.connectionStatus = "verified";
+          save();
+          updateSyncStatusUI();
         } else {
           const err = await res.json();
           sysNotif(`Failed: ${err.message || 'Check credentials'}`, "var(--red)", "SYNC FAILED");
+          D.settings.cloudSync.connectionStatus = "failed";
+          save();
+          updateSyncStatusUI();
         }
       } catch (err) {
         sysNotif("Connection error. Check your network.", "var(--red)", "SYNC ERROR");
+        D.settings.cloudSync.connectionStatus = "failed";
+        save();
+        updateSyncStatusUI();
       }
     }
 
